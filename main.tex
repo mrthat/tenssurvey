@@ -1,0 +1,67 @@
+\documentclass{acm_proc_article-sp}
+
+\usepackage{color}
+\usepackage{url}
+\usepackage{ulem}
+\usepackage{mdwlist}
+\usepackage[numbers,sort&compress]{natbib}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+%Tentative title
+\title{Challenges in Tensor Computation: A Survey}
+
+%Tentative author list
+\author{
+  Casey Battaglino$^\ast$, Joachim Perros$^\ast$, Jiajia Li$^\ast$, \\
+   Jimeng Sun$^\ast$, Richard Vuduc$^\ast$
+  \\ Georgia Institute of Technology, Atlanta, GA
+  \\ $^\ast$ School of Computational Science and Engineering \\
+  \{cbattaglino3,perros,jiajiali,jsun,richie\}@gatech.edu } \date{}
+
+\newcommand{\Eye}[1]{{\emph{#1}}}
+\newcommand{\TODO}[1]{{\color{red}\textbf{#1}}}
+\newcommand{\IGNORE}[1]{}
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\maketitle
+
+\begin{abstract}
+  Write abstract here
+\end{abstract}
+
+
+%=======================================================================
+\section{Introduction} \label{sec:intro}
+%=======================================================================
+\input{intro}
+
+
+%=======================================================================
+\section{Background} \label{sec:background}
+%=======================================================================
+\input{background}
+
+
+%=======================================================================
+\section{Conclusions} \label{sec:conclusions}
+%=======================================================================
+
+
+%=======================================================================
+\section{Acknowledgments} \label{sec:acknowledgments}
+%=======================================================================
+
+\bibliographystyle{abbrv} \bibliography{tensbib}
+
+\input{appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%eof
