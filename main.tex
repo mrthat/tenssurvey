@@ -1,5 +1,4 @@
-\documentclass{acm_proc_article-sp}
-
+\documentclass[10pt]{article}
 \usepackage{color}
 \usepackage{url}
 \usepackage{ulem}
@@ -9,7 +8,7 @@
 \pagenumbering{arabic}
 
 %Tentative title
-\title{Challenges in Tensor Computation: A Survey}
+\title{Data Analysis with Tensor Decompositions}
 
 %Tentative author list
 \author{
@@ -31,20 +30,67 @@
 \maketitle
 
 \begin{abstract}
-  Write abstract here
+Linear algebra is the foundation for much of data analysis, but multi-linear algebra remains a fringe topic. High-dimensional tensors are seen as difficult to reason about, and the curse of dimensionality breaks down traditional algorithmic approaches. Tensor methods have been the target of much research in signal processing and applied mathematics. We present this survey with the aim of promoting tensor methods within the data analysis community.
+
+We emphasize that scalable, compact algorithms exist to discover multi-dimensional relationships in massive tensors, and that Tensor Network diagrams, borrowed from the physics community, allow us to reason about complicated tensor decompositions in a highly intuitive way.
+
+Finally, we survey the limitations of existing tensor software, as well as the challenges and scalability limits of existing approaches, to provide a springboard for future research into making tensor methods feasible for Big Data.
 \end{abstract}
 
-
+\tableofcontents
 %=======================================================================
 \section{Introduction} \label{sec:intro}
-%=======================================================================
-\input{intro}
-
 
 %=======================================================================
 \section{Background} \label{sec:background}
+\subsection{Definitions} \label{sec:definitions}
+\subsubsection{Tensor Representation}
+\subsubsection{Tensor Algebra}
+\subsubsection{Tensor Contractions}
+\subsubsection{Tensor Network Diagrams}
+\subsection{Applications}
+Importance of multi-linear rank-reduction.
+
+Feature selection, feature extraction, classification, multi-way clustering.
+Blind-source separation. 
+psycho-metrics, chemometrics, signal processing, numerical linear algebra, computer vision, watermarking, numerical analysis, data mining, neuroscience, graph analysis, ICA.
+quantum chemistry(Hartree-Fock, MD), EM wave scattering/logging. 3-dimensional PDEs. 
 %=======================================================================
-\input{background}
+\section{Low-Rank Approximations}
+%mention need for compression
+
+\subsection{CP Decomposition}
+CP breaks curse of dimensionality: instead of $n^d$ parameters we need only $dnr$.
+CP is ill-posed, different regularizations can be used.
+\subsection{Tucker Decomposition}
+Instead of $n^d$ parameters we need only $\prod_{i=1}^d r_i + n\sum_{i=1}^d r_i$.
+Stable, we can use SVD~\cite{Lathauwer00amultilinear}.
+We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
+\subsection{Hierarchical Tucker}
+\subsection{Tensor Train}
+%=======================================================================
+\section{Computational Challenges}
+\subsection{Curse of Dimensionality}
+\subsubsection{Time}
+\subsubsection{Memory Blowup}
+\subsubsection{Storage}
+\subsection{Memory Efficiency}
+\subsubsection{Representation Issues}
+\subsubsection{Distributed Memory Issues}
+\subsubsection{Communication Bounds}
+\subsection{Stability}
+%=======================================================================
+%Section on: common operations? computational bottlenecks?
+\section{Experiments}
+\subsection{Breaking Points}
+\subsubsection{CP Decomposition}
+\subsubsection{Tucker Decomposition}
+\subsubsection{Hierarchical Tucker}
+\subsubsection{Tensor Train}
+\subsection{Comparisons}
+%=======================================================================
+\section{Current Implementations}
+\subsection{Tensor Toolbox}
 
 
 %=======================================================================
@@ -53,7 +99,7 @@
 
 
 %=======================================================================
-\section{Acknowledgments} \label{sec:acknowledgments}
+%\section{Acknowledgments} \label{sec:acknowledgments}
 %=======================================================================
 
 \bibliographystyle{abbrv} \bibliography{tensbib}
