@@ -7,6 +7,14 @@
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
+%TODO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Discuss title
+%Do we discuss dense vs. sparse for each case or have a separate section for sparse?
+%Should we consider graphical models?
+%Should abstract emphasize bringing TD's to CS community, or emphasize computational limits?
+
+
 %Tentative title
 \title{Data Analysis with Tensor Decompositions}
 
@@ -30,11 +38,11 @@
 \maketitle
 
 \begin{abstract}
-Linear algebra is the foundation for much of data analysis, but multi-linear algebra remains a fringe topic. High-dimensional tensors are seen as difficult to reason about, and the curse of dimensionality breaks down traditional algorithmic approaches. Tensor methods have been the target of much research in signal processing and applied mathematics. We present this survey with the aim of promoting tensor methods within the data analysis community.
+Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community.
 
-We emphasize that scalable, compact algorithms exist to discover multi-dimensional relationships in massive tensors, and that Tensor Network diagrams, borrowed from the physics community, allow us to reason about complicated tensor decompositions in a highly intuitive way.
+This survey has two goals: to demistify tensor approaches in data science (by moving away from clunky traditional notation), and to clearly delineate where current approaches become computationally infeasible as a call towards future research in scalability.
 
-Finally, we survey the limitations of existing tensor software, as well as the challenges and scalability limits of existing approaches, to provide a springboard for future research into making tensor methods feasible for Big Data.
+
 \end{abstract}
 
 \tableofcontents
@@ -45,10 +53,14 @@ Finally, we survey the limitations of existing tensor software, as well as the c
 \section{Background} \label{sec:background}
 \subsection{Definitions} \label{sec:definitions}
 \subsubsection{Tensor Representation}
+\subsubsection{Multilinear Rank}
+Computing rank is NP complete, and best-rank approximation is ill-posed~\cite{Kolda09tensordecompositions}
 \subsubsection{Tensor Algebra}
 \subsubsection{Tensor Contractions}
 \subsubsection{Tensor Network Diagrams}
 \subsection{Applications}
+In signal processing we may have both temporal and spatial components to our signal (in combination with frequency)
+
 Importance of multi-linear rank-reduction.
 
 Feature selection, feature extraction, classification, multi-way clustering.
@@ -59,15 +71,23 @@ quantum chemistry(Hartree-Fock, MD), EM wave scattering/logging. 3-dimensional P
 \section{Low-Rank Approximations}
 %mention need for compression
 
+Tucker, CP are old concepts. Decomposition into block terms~\cite{Lathauwer08decompositionsof} generalizes standard methods.
+
 \subsection{CP Decomposition}
+Introduced:~\cite{hitchcock-sum-1927}
 CP breaks curse of dimensionality: instead of $n^d$ parameters we need only $dnr$.
 CP is ill-posed, different regularizations can be used.
 \subsection{Tucker Decomposition}
+Introduced:~\cite{Tuck1966c}
 Instead of $n^d$ parameters we need only $\prod_{i=1}^d r_i + n\sum_{i=1}^d r_i$.
 Stable, we can use SVD~\cite{Lathauwer00amultilinear}.
 We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
+
+If the Tucker Decomposition is properly normalized, it is also considered an HOSVD.
 \subsection{Hierarchical Tucker}
+Introduced:~\cite{Grasedyck:2010:HSV:1958286.1958311}
 \subsection{Tensor Train}
+Introduced:~\cite{Oseledets:2011:TD:2079141.2079149}
 %=======================================================================
 \section{Computational Challenges}
 \subsection{Curse of Dimensionality}
@@ -78,13 +98,14 @@ We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
 \subsubsection{Representation Issues}
 \subsubsection{Distributed Memory Issues}
 \subsubsection{Communication Bounds}
+\subsection{Sparsity}
 \subsection{Stability}
 %=======================================================================
 %Section on: common operations? computational bottlenecks?
 \section{Experiments}
 \subsection{Breaking Points}
 \subsubsection{CP Decomposition}
-\subsubsection{Tucker Decomposition}
+\subsubsection{Tucker/HOSVD}
 \subsubsection{Hierarchical Tucker}
 \subsubsection{Tensor Train}
 \subsection{Comparisons}
