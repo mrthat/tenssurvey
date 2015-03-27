@@ -1,11 +1,41 @@
 \documentclass[10pt]{article}
 \usepackage{color}
+\usepackage{xcolor}
 \usepackage{url}
 \usepackage{ulem}
 \usepackage{mdwlist}
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage{booktabs}
+\usepackage{my-stdpkgs}
+\usepackage{my-typography}
+%\usepackage[numbers,sort&compress]{natbib}
+
+
+%\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{amsfonts}
+\usepackage{morefloats}
 \setcounter{page}{1}
 \pagenumbering{arabic}
+
+\makeatletter
+\newcommand{\ccell}[3][]{%
+  \kern-\fboxsep
+  \if\relax\detokenize{#1}\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {\colorbox{#2}}%
+  {\colorbox[#1]{#2}}%
+  {#3}\kern-\fboxsep
+}
+\makeatother
+\definecolor{cellgray}{gray}{0.9}
+
+\newcommand{\yesy}{\ccell{green}{Y}}
+\newcommand{\non}{\ccell{red}{N}}
+
 
 %TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,10 +43,13 @@
 %Do we discuss dense vs. sparse for each case or have a separate section for sparse?
 %Should we consider graphical models?
 %Should abstract emphasize bringing TD's to CS community, or emphasize computational limits?
+%Move to bitbucket
+%By next meeting make a grid of software :  latex booktabs
+
 
 
 %Tentative title
-\title{Data Analysis with Tensor Decompositions}
+\title{Data Analysis using Tensor Decompositions: Challenges and Applications (TODO)}
 
 %Tentative author list
 \author{
@@ -26,10 +59,6 @@
   \\ $^\ast$ School of Computational Science and Engineering \\
   \{cbattaglino3,perros,jiajiali,jsun,richie\}@gatech.edu } \date{}
 
-\newcommand{\Eye}[1]{{\emph{#1}}}
-\newcommand{\TODO}[1]{{\color{red}\textbf{#1}}}
-\newcommand{\IGNORE}[1]{}
-\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -38,9 +67,9 @@
 \maketitle
 
 \begin{abstract}
-Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community.
+Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community. One particularly difficult and relevant issue is the efficient low-rank representation of highly sparse, high-dimensional data.
 
-This survey has two goals: to demistify tensor approaches in data science (by moving away from clunky traditional notation), and to clearly delineate where current approaches become computationally infeasible as a call towards future research in scalability.
+This survey has two goals: to demistify tensor approaches in data science (by moving away from clunky traditional notation), and to clearly delineate where current approaches (both dense and sparse) become computationally infeasible as a call towards future research in scalability.
 
 
 \end{abstract}
@@ -58,7 +87,8 @@ Computing rank is NP complete, and best-rank approximation is ill-posed~\cite{Ko
 \subsubsection{Tensor Algebra}
 \subsubsection{Tensor Contractions}
 \subsubsection{Tensor Network Diagrams}
-\subsection{Applications}
+
+\section{Data Science Applications}
 In signal processing we may have both temporal and spatial components to our signal (in combination with frequency)
 
 Importance of multi-linear rank-reduction.
@@ -77,6 +107,7 @@ Tucker, CP are old concepts. Decomposition into block terms~\cite{Lathauwer08dec
 Introduced:~\cite{hitchcock-sum-1927}
 CP breaks curse of dimensionality: instead of $n^d$ parameters we need only $dnr$.
 CP is ill-posed, different regularizations can be used.
+CP assumes every tensor mode is involved with every `concept.' Restrictive for noisy higher order data (-Joachim)
 \subsection{Tucker Decomposition}
 Introduced:~\cite{Tuck1966c}
 Instead of $n^d$ parameters we need only $\prod_{i=1}^d r_i + n\sum_{i=1}^d r_i$.
@@ -84,8 +115,14 @@ Stable, we can use SVD~\cite{Lathauwer00amultilinear}.
 We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
 
 If the Tucker Decomposition is properly normalized, it is also considered an HOSVD.
+
+Exponential storage, time. In sparse case, we have same problem: dense results (-Joachim)
 \subsection{Hierarchical Tucker}
 Introduced:~\cite{Grasedyck:2010:HSV:1958286.1958311}
+B's can express a linear combination of vectors in the U's below them.
+Obst 1: SVD of tensor unfoldings
+Obst 2: Intermediate memory blowup (computing core tensor)... dense intermediate result
+\subsubsection{Sparse H-Tucker}
 \subsection{Tensor Train}
 Introduced:~\cite{Oseledets:2011:TD:2079141.2079149}
 %=======================================================================
@@ -113,7 +150,70 @@ Introduced:~\cite{Oseledets:2011:TD:2079141.2079149}
 \section{Current Implementations}
 \subsection{Tensor Toolbox}
 
+Basic tensor operations mainly consist of tensors and matrices conversion (matricization and tensorization) and different kinds of tensor multiplications. A bunch of libraries are built to implement part or all of basic tensor operations, like FTensor~\cite{Landry:2003:IHP:1240120.1240122,FTensor}, LTensor~\cite{LTensor}, Blitz++~\cite{blitz}, Boost Multidimensional Array Library~\cite{boost-multiarray}, the Tensor C++ library~\cite{tensorCPP}, and HUJI Tensor Library~\cite{huji}. All the libraries are written in C++ and are sequential ones, but they target on various areas. Besides, Tensor Contraction Engine(TCE)~\cite{TCE} and Cyclops Tensor Framework(CTF)~\cite{CTF} also realize basic tensor operations, especially tensor contraction. Both the two tools can be used in a distributed memory system by optimizing communication cost. CTF also supports two-level parallelism (MPI+OpenMP).
 
+As concerned the low-order tensor family, tensor decomposition is a common method. 
+One of the most popular MATLAB packages is the
+Tensor Toolbox~\cite{TensorToolbox} which supports CP and Tucker decomposition for dense, sparse, and structured tensors. It also supports scalable tensor decomposition proposed by T. Kolda and J. Sun~\cite{Kolda:2008:STD:1510528.1511376}. Other tools also support some (different) tensor decomposition methods, e.g. N-way Toolbox~\cite{Nway-Paper,Nway}, CuBatch~\cite{CuBatch}, PLS\_Toolbox~\cite{PLS-toolbox}, Tensorlab~\cite{Tensorlab}, TDALAB~\cite{TDALAB,TDALAB_online}, TENSORBOX~\cite{TENSORBOX}, and PARCUBE~\cite{PARCUBE}. They are all built on MATLAB, and the last three tools are based on Tensor Toolbox. Other than Tensor Toolbox, Tensorlab and PARCUBE also support sparse input tensors. All the tensor decomposition tools are sequential.
+
+For high-order tensors in machine learning area, tensor networks methods are widely used. Tensor Train Toolbox~\cite{tt-toolbox} is for tensor train method, while Hierarchical Tucker Toolbox~\cite{HT,Kressner:2014:A9H:2610268.2538688} focuses on Hierarchical Tucker method. Both of them are built on MATLAB. TensorCalculus Library~\cite{Calculus} is for more general tensor networks, supporting both tensor train and hierarchical Tucker. Tensor Network Theory Library~\cite{TNT} is another kind of tensor networks, based on tensor network theory. TensorCalculus Library and Tensor Network Theory Library are both implemented in C++. For now, all the four tools are sequential. 
+
+There are some software based on density-matrix renormalization group (DMRG) method to do decomposition, including the Heidelberg MCTDH Package (Fortran)~\cite{MCTDH}, Intelligent Tensor (ITensor, C++)~\cite{ITensor}, ALPS(C++)~\cite{ALPS}, and Block(C++)~\cite{Block}. 
+
+
+\begin{center}
+    \begin{tabular}{ | l | l | l | l | l | l | l | l |}
+    \hline
+    Package 					
+    & Language & $\underline{A} \times \underline{B}$ & $\underline{A} \otimes \underline{B}$ & CP & Tucker & TN & Domain \\ \hline
+    scikit-tensor					
+    & Python & \yesy & \yesy & \yesy & \yesy & \non & Physics \\ \hline
+    PyTensor				
+    & Python & \yesy & \yesy & \non & \non & \non & Physics \\ \hline
+    FTensor~\cite{Landry:2003:IHP:1240120.1240122,FTensor}					
+    & C++ & \yesy & \yesy & \non & \non & \non & Physics \\ \hline
+    LTensor~\cite{LTensor} 		
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & Physics \\ \hline
+    tensor (Theano) 			
+    & Python & \yesy & \yesy & \yesy & \yesy & \non & ML \\ \hline
+    Blitz++~\cite{blitz} 
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    Boost MDA~\cite{boost-multiarray} 
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    Tensor C++ Library~\cite{tensorCPP} 			
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    HUJI Tensor Library~\cite{huji} 		
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    TCE~\cite{TCE}
+    & DSL & \yesy & \yesy & \yesy & \yesy & \non & Chemistry \\ \hline
+    Cyclops~\cite{CTF}
+    & C++ & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    Tensor Toolbox~\cite{TensorToolbox}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    N-way Toolbox~\cite{Nway-Paper,Nway}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & Chemistry \\ \hline
+    CuBatch~\cite{CuBatch}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & ML \\ \hline
+    PLS-Toolbox~\cite{PLS-toolbox}
+    & MATLAB & \yesy & \yesy & \non & \yesy & \non & Chemistry \\ \hline
+    TDALAB~\cite{TDALAB,TDALAB_online}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    TENSORBOX~\cite{TENSORBOX}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & General \\ \hline
+    Tensorlab~\cite{Tensorlab}
+    & MATLAB & \yesy & \yesy & \yesy & \non & \non & General \\ \hline
+    PARCUBE~\cite{PARCUBE}
+    & MATLAB & \yesy & \yesy & \yesy & \non & \non & General \\ \hline
+    Tensor Train Toolbox~\cite{tt-toolbox}
+    & MATLAB & \yesy & \yesy & \yesy & \non & TT & General \\ \hline
+    Hier. Tucker Toolbox~\cite{HT,Kressner:2014:A9H:2610268.2538688} 		& MATLAB & \yesy & \yesy & \yesy & \non & HT & General \\ \hline
+    TensorCalculus~\cite{Calculus}
+    & C++ & \yesy & \yesy & \yesy & \yesy & \yesy & General \\ \hline
+    Tensor Network Theory~\cite{TNT}
+    & C++ & \yesy & \yesy & \yesy & \yesy & \yesy & Physics \\
+    \hline
+    \end{tabular}
+\end{center}
 %=======================================================================
 \section{Conclusions} \label{sec:conclusions}
 %=======================================================================
