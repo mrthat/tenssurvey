@@ -10,7 +10,7 @@ BIBSRCS = $(BIBDIR)/library.bib
 PDF_FINAL := $(FINAL).pdf
 
 PDF := $(PAPER).pdf
-TEX := $(PAPER).tex intro.tex background.tex appendix.tex
+TEX := $(PAPER).tex intro.tex background.tex software.tex appendix.tex
 BIBS := tensbib.bib
 FIGS := 
 #SVG := $(addsuffix .svg, ... )

@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[leqno,onefignum,onetabnum]{siamltex1213}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{url}
@@ -7,6 +7,8 @@
 \usepackage{booktabs}
 \usepackage{my-stdpkgs}
 \usepackage{my-typography}
+\usepackage{placeins}
+\usepackage{lscape}
 \usepackage{caption}
 %\usepackage[numbers,sort&compress]{natbib}
 
@@ -34,8 +36,8 @@
 \makeatother
 \definecolor{cellgray}{gray}{0.9}
 
-\newcommand{\yesy}{\ccell{green}{Y}}
-\newcommand{\non}{\ccell{red}{N}}
+\newcommand{\yesy}{\ccell{gray}{Y}}
+\newcommand{\non}{\ccell{white}{N}}
 \newcommand{\myhline}{}
 
 
@@ -46,12 +48,13 @@
 %Should we consider graphical models?
 %Should abstract emphasize bringing TD's to CS community, or emphasize computational limits?
 %Move to bitbucket
-%By next meeting make a grid of software :  latex booktabs
 
-
+%construct straw-man survey for software grid
+%possibilities for software grid:
+% max mode, still maintained? user base? citations? how do you measure usability
 
 %Tentative title
-\title{Data Analysis using Tensor Decompositions: Challenges and Applications (TODO)}
+\title{Data Analysis using Tensor Decompositions: Challenges and Applications}
 
 %Tentative author list
 \author{
@@ -60,7 +63,6 @@
   \\ Georgia Institute of Technology, Atlanta, GA
   \\ $^\ast$ School of Computational Science and Engineering \\
   \{cbattaglino3,perros,jiajiali,jsun,richie\}@gatech.edu } \date{}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -72,22 +74,27 @@
 Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community. One particularly difficult and relevant issue is the efficient low-rank representation of highly sparse, high-dimensional data.
 
 This survey has two goals: to demistify tensor approaches in data science (by moving away from clunky traditional notation), and to clearly delineate where current approaches (both dense and sparse) become computationally infeasible as a call towards future research in scalability.
-
-
 \end{abstract}
 
-\tableofcontents
+%\tableofcontents
 %=======================================================================
 \section{Introduction} \label{sec:intro}
+
+Existing surveys: Major Kolda survey~\cite{Kolda09tensordecompositions}, low-rank approximation survey~\cite{larskres-survey-2013}, tensor network survey~\cite{DBLP:journals/corr/Cichocki14}
+
+Explain why such a diverse landscape of tensor decompositions exists, and why we need native implementations of various types (TT,HT) to make computations feasible.
 
 %=======================================================================
 \section{Background} \label{sec:background}
 \subsection{Definitions} \label{sec:definitions}
 \subsubsection{Tensor Representation}
+
 \subsubsection{Multilinear Rank}
 Computing rank is NP complete, and best-rank approximation is ill-posed~\cite{Kolda09tensordecompositions}
 \subsubsection{Tensor Algebra}
+
 \subsubsection{Tensor Contractions}
+
 \subsubsection{Tensor Network Diagrams}
 
 \section{Data Science Applications}
@@ -107,7 +114,7 @@ Anandkumar papers~\cite{Anandk}
 
 Tucker, CP are old concepts. Decomposition into block terms~\cite{Lathauwer08decompositionsof} generalizes standard methods.
 
-Neat application: Bblinear maps can be generalized as tensors, so tensor decompositions can yield faster algorithms for matrix multiplication, i.e~\cite{Benson}
+Neat application: Bilinear maps can be generalized as tensors, so tensor decompositions can yield faster algorithms for matrix multiplication, i.e~\cite{Benson}
 
 \subsection{CP Decomposition}
 Introduced:~\cite{hitchcock-sum-1927}
@@ -117,7 +124,7 @@ CP assumes every tensor mode is involved with every `concept.' Restrictive for n
 \subsection{Tucker Decomposition}
 Introduced:~\cite{Tuck1966c}
 Instead of $n^d$ parameters we need only $\prod_{i=1}^d r_i + n\sum_{i=1}^d r_i$.
-Stable, we can use SVD~\cite{Lathauwer00amultilinear}.
+Stable, we can use SVD~\cite{Lathauwer00amultilinear} To compute using `Tucker HOOI' algorithm~\cite{Lathauwer-THOOI}.
 We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
 
 If the Tucker Decomposition is properly normalized, it is also considered an HOSVD.
@@ -128,6 +135,9 @@ Introduced:~\cite{Grasedyck:2010:HSV:1958286.1958311}
 B's can express a linear combination of vectors in the U's below them.
 Obst 1: SVD of tensor unfoldings
 Obst 2: Intermediate memory blowup (computing core tensor)... dense intermediate result
+
+Tree-adaptive algorithm using clustering~\cite{treeadap}
+
 \subsubsection{Sparse H-Tucker}
 If we use CUR decomposition instead of SVD and store only those columns and rows that contain an element, we can greatly reduce storage and retain sparsity of 
 
@@ -137,30 +147,57 @@ Introduced:~\cite{Oseledets:2011:TD:2079141.2079149}
 \section{Computational Challenges}
 \subsection{NP-Hardness}
 Most tensor problems are NP-Hard~\cite{Hillar}.
+
 \subsection{Curse of Dimensionality}
+Does \textsc{ParCube} help here?~\cite{PARCUBE}.
+
 \subsubsection{Time}
+
 \subsubsection{Memory Blowup}
+Memory-blowup problem identified and addressed in~\cite{Kolda08scalabletensor}.
+
+In CP-ALS, we have to compute $C\odot B, C\odot A, B\odot A$. Alleviation described in~\cite{Bader07efficientmatlab}
+
 \subsubsection{Storage}
+
 \subsection{Memory Efficiency}
+
 \subsubsection{Representation Issues}
+Tensor representations are cache-unfriendly because we may have to load them along any mode.
+There are a few proposed solutions~\cite{6408676}
+
 \subsubsection{Distributed Memory Issues}
+Mention GigaTensor~\cite{Kang:2012}, which scales much larger than MATLAB but suffers in performance due to MapReduce. 
+
+Discuss DFacTo~\cite{NIPS2014_5395}, another parallel approach. 
+
 \subsubsection{Communication Bounds}
+Recently established by Solomonik, et. al~\cite{commlow}.
+
 \subsection{Computational Scalability}
 There is a discussion of recent developments in distributed scalability of tensor algorithms~\cite{falbull}.
+
 \subsection{Sparsity}
+SPLATT takes a hyper-graph partitioning approach to reordering based on sparsity pattern~\cite{SPLATT}
+
 \subsection{Stability}
 %=======================================================================
 %Section on: common operations? computational bottlenecks?
 \section{Experiments}
 \subsection{Breaking Points}
+
 \subsubsection{CP Decomposition}
+
 \subsubsection{Tucker/HOSVD}
+
 \subsubsection{Hierarchical Tucker}
+
 \subsubsection{Tensor Train}
+
 \subsection{Comparisons}
 %=======================================================================
 \section{Implementations}
-\include{software}
+\input{software}
 %=======================================================================
 \section{Conclusions} \label{sec:conclusions}
 %=======================================================================
