@@ -1,4 +1,146 @@
-go through current tensor software, list capabilities... possibly in a table?
-this should be near the end or possibly in the appendix because it will be subject to lots of changes in the future
+The landscape of tensor libraries is growing quickly, but the capabilities of each implementation varies widely and often focuses on a small subset of mathematical methods, often in support of a field-specific application. Native support of tensor data structures is still lacking in nearly every widely-adopted programming language, although powerful open-source libraries are available to the C++ and MATLAB communities. 
 
-% eof
+While software landscape is expected to change greatly in the near future, this section aims to document the capabilities of current implementations at  publication date.
+
+\subsection{Data Structures}
+Recent work has introduced more efficient data structures for distributed dense and sparsetensors.
+
+Discuss Baskaran et. al's representation~\cite{6408676}.
+
+Discuss Cyclops approach~\cite{CTF}.
+
+\subsection{Basic Arithmetic}
+(Addition, multiplication)
+
+Discuss indexing approach.
+
+FTensor, LTensor, Blitz++, HUJI
+
+\subsection{Matricization and Tensorization}
+
+\subsection{Tensor Multiplication}
+
+\subsection{Tensor Contraction}
+Discuss optimization approaches taken by Tensor Contraction Engine~\cite{TCE} and Cyclops~\cite{CTF,Solomonik:EECS-2014-170}.
+
+Another paper to read from SC14:~\cite{Rajbhandari:2014:CFC:2683593.2683635}
+
+Discuss tensor contraction as the process of computing on a Tensor Network.
+
+\subsection{Tensor Decompositions}
+Discuss how a variety of different algorithms can be taken to compute the same decomposition, (i.e ALS, CG, etc) with examples.
+
+Discuss GigaTensor, DFacto.
+
+\subsection{Tensor Networks}
+
+\begin{center}\scriptsize
+    \begin{tabular}{ |l  l  c  c  c  c  c  l|}
+    \toprule
+    \textbf{Implementation} & \textbf{Environment} & $\underline{A} \times \underline{B}$ & $\underline{A} \otimes \underline{B}$ & \textbf{CP} & \textbf{Tucker} & \textbf{TN} & \textbf{Domain} \\ \hline
+    %scikit-tensor					
+    %& Python & \yesy & \yesy & \yesy & \yesy & \non & Phys. \\ \myhline
+    PyTensor~\cite{Yoo10pytensor:a}				
+    & Python & \yesy & \non & \non & \yesy & \non & Gen. \\ \myhline
+    tensor (Theano)             
+    & Python & \yesy & \yesy & \non & \non & \non & ML \\ \myhline
+    SPLATT~\cite{SPLATT}
+    & C & \yesy & \non & \non & \non & \non & Gen. \\ \myhline
+    FTensor~\cite{Landry:2003:IHP:1240120.1240122,FTensor}					
+    & C++ & \yesy & \yesy & \non & \non & \non & Phys. \\ \myhline
+    LTensor~\cite{LTensor} 		
+    & C++ & \yesy & \yesy & \non & \non & \non & Phys. \\ \myhline
+    Blitz++~\cite{blitz} 
+    & C++ & \yesy & \yesy & \non & \non & \non & Gen. \\ \myhline
+    Boost MDA~\cite{boost-multiarray} 
+    & C++ & \non & \non & \non & \non & \non & Gen. \\ \myhline
+    C++ Tensor TB			
+    & C++ & \yesy & \yesy & \yesy & \non & \non & Gen. \\ \myhline
+    HUJI~\cite{huji} 		
+    & C++ & \non & \non & \non & \non & \non & Gen. \\ \myhline
+    Cyclops~\cite{CTF}
+    & C++ & \yesy & \yesy & \non & \non & \non & Gen. \\ \myhline
+    TensorCalculus~\cite{Calculus}
+    & C++ & \yesy & \yesy & \yesy & \yesy & \yesy & Gen. \\ \myhline
+    TNT Library~\cite{TNT}
+    & C++ & \non ? & \yesy & \non & \non & \yesy & Phys. \\ \myhline
+    Tensor Toolbox~\cite{TensorToolbox}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & Gen. \\ \myhline
+    N-way Toolbox~\cite{Nway-Paper,Nway}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & Chem. \\ \myhline
+    CuBatch~\cite{CuBatch}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & ML \\ \myhline
+    PLS-Toolbox~\cite{PLS-toolbox}
+    & MATLAB & \yesy & \yesy & \non & \yesy & \non & Chem. \\ \myhline
+    TDALAB~\cite{TDALAB,TDALAB_online}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & Gen. \\ \myhline
+    TENSORBOX~\cite{TENSORBOX}
+    & MATLAB & \yesy & \yesy & \yesy & \yesy & \non & Gen. \\ \myhline
+    Tensorlab~\cite{Tensorlab}
+    & MATLAB & \yesy & \yesy & \yesy & \non & \non & Gen. \\ \myhline
+    \textsc{ParCube}~\cite{PARCUBE}
+    & MATLAB & \yesy & \yesy & \yesy & \non & \non & Gen. \\ \myhline
+    TT-Toolbox~\cite{tt-toolbox}
+    & MATLAB & \yesy & \yesy & \non & \non & \ccell{green}{TT} & Gen. \\ \myhline
+    htucker~\cite{HT,Kressner:2014:A9H:2610268.2538688} & MATLAB & \yesy & \yesy & \non & \non & \ccell{green}{HT} & General \\ \myhline
+    TCE~\cite{TCE}
+    & DSL & \yesy & \yesy & \non & \non & \non & Chem. \\ \hline
+    \end{tabular}
+    \captionof{table}{Software support for native tensor arithmetic and decompositions.} \label{tab:typesupport}
+\end{center}
+
+\begin{center}\scriptsize
+    \begin{tabular}{ |l  c  c  c|}
+    \toprule
+    \textbf{Implementation} & \textbf{Dense} & \textbf{Sparse} & \textbf{Distributed}  \\ \hline
+    %scikit-tensor                   
+    %& \yesy & \non & \non \\ \myhline
+    PyTensor~\cite{Yoo10pytensor:a}             
+    & \yesy & \yesy & \non \\ \myhline
+    tensor (Theano)             
+    & \yesy & \non & \non \\ \myhline
+    SPLATT~\cite{SPLATT}
+    & \non & \yesy & \yesy \\ \myhline
+    FTensor~\cite{Landry:2003:IHP:1240120.1240122,FTensor}                  
+    & \yesy & \non & \non \\ \myhline
+    LTensor~\cite{LTensor}      
+    & \yesy & \non & \non \\ \myhline
+    Blitz++~\cite{blitz} 
+    & \yesy & \yesy ? & \non \\ \myhline
+    Boost MDA~\cite{boost-multiarray} 
+    & \yesy & \non & \non \\ \myhline
+    C++ Tensor TB             
+    & \yesy & \yesy & \non \\ \myhline
+    HUJI~\cite{huji}         
+    & \yesy & \yesy & \non \\ \myhline
+    Cyclops~\cite{CTF}
+    & \yesy & \non & \ccell{green}{MPI} \\ \myhline
+    TensorCalculus~\cite{Calculus}
+    & \yesy & \non & \non ? \\ \myhline
+    TNT Library~\cite{TNT}
+    & \yesy & \yesy & \non \\ \myhline
+    Tensor Toolbox~\cite{TensorToolbox}
+    & \yesy & \yesy & \non \\ \myhline
+    N-way Toolbox~\cite{Nway-Paper,Nway}
+    & \yesy & \yesy & \non \\ \myhline
+    CuBatch~\cite{CuBatch}
+    & \yesy & \yesy & \non \\ \myhline
+    PLS-Toolbox~\cite{PLS-toolbox}
+    & \yesy & \yesy & \non \\ \myhline
+    TDALAB~\cite{TDALAB,TDALAB_online}
+    & \yesy & \yesy & \non \\ \myhline
+    TENSORBOX~\cite{TENSORBOX}
+    & \yesy & \yesy & \non \\ \myhline
+    Tensorlab~\cite{Tensorlab}
+    & \yesy & \yesy & \non \\ \myhline
+    \textsc{ParCube}~\cite{PARCUBE}
+    & \yesy & \yesy & \yesy \\ \myhline
+    TT-Toolbox~\cite{tt-toolbox}
+    & \yesy & \non & \non \\ \myhline
+    htucker~\cite{HT,Kressner:2014:A9H:2610268.2538688} & 
+    \yesy & \yesy? & \non \\ \myhline
+    TCE~\cite{TCE}
+    & \yesy & \non ? & \yesy \\ \hline
+    \end{tabular}
+    \captionof{table}{Software support for native dense, sparse, and distributed tensors.} \label{tab:typesupport}
+\end{center}
