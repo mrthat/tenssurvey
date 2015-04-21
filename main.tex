@@ -1,12 +1,12 @@
-\documentclass[leqno,onefignum,onetabnum]{siamltex1213}
+\documentclass[leqno,onefignum,onetabnum,twocolumn]{siamltex1213}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{ulem}
 \usepackage{mdwlist}
 \usepackage{booktabs}
-\usepackage{my-stdpkgs}
-\usepackage{my-typography}
+\usepackage{vuduc-stdpkgs}
+\usepackage{vuduc-typography}
 \usepackage{placeins}
 \usepackage{lscape}
 \usepackage{caption}
@@ -40,6 +40,54 @@
 \newcommand{\non}{\ccell{white}{N}}
 \newcommand{\myhline}{}
 
+\newcommand{\TensorToolbox}{{\scshape Tensor Toolbox}\xspace}
+\newcommand{\Cyclops}{{\scshape Cyclops}\xspace}
+
+\newcommand{\MakeAcronym}[3]{
+  \acrodef{#2}[{\scshape #2}]{#3}
+  \newcommand{#1}{\ac{#2}\xspace}
+}
+\MakeAcronym{\CTF}{Ctf}{\Cyclops Tensor Framework}
+\MakeAcronym{\BLAS}{Blas}{Basic Linear Algebra Subprograms}
+\MakeAcronym{\BLIS}{Blis}{\BLAS-like Library Instantiation Software}
+\MakeAcronym{\TTM}{Ttm}{tensor-times-matrix multiply}
+\MakeAcronym{\InTTM}{InTtm}{in-place tensor-times-matrix multiply}
+\MakeAcronym{\GEMM}{Gemm}{general matrix-matrix multiply}
+\newcommand{\TMM}{\TTM} % synonym
+
+% Additional math notation
+\newcommand{\varTh}[1]{\ensuremath{{#1}^{\tiny\mbox{th}}}\xspace}
+%\newcommand{\T}[1]{\ensuremath{\mathcal{#1}}\xspace} % tensor
+\newcommand{\T}[1]{\ensuremath{\mathbf{\underline{\uppercase{#1}}}}\xspace} % tensor
+\newcommand{\M}[1]{\ensuremath{\mathbf{\uppercase{#1}}}\xspace} % matrix
+\newcommand{\V}[1]{\ensuremath{\mathbf{\lowercase{#1}}}\xspace} % vector
+\newcommand{\Msup}[2]{\ensuremath{\M{#1}^{^{(#2)}}}\xspace} % {matrix}^{(superscript)}
+\newcommand{\Msub}[2]{\ensuremath{\M{#1}_{_{(#2)}}}\xspace} % {matrix}_{(subscript)}
+\newcommand{\Tsup}[2]{\ensuremath{\T{#1}^{^{(#2)}}}\xspace} % {tensor}^{(superscript)}
+\newcommand{\Tsub}[2]{\ensuremath{\T{#1}_{_{(#2)}}}\xspace} % {tensor}_{(subscript)}
+
+\newcommand{\timesSupSub}[2]{\ensuremath{\times^{^{#1}}_{_{#2}}}\xspace}
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}
+\newcommand{\Iall}[2]{#1_1\times\dots\times #1_#2} 
+\newcommand{\Iallbutone}[5]{#1_1 #4\dots#4 #1_{#3-1} #5 #4 #1_{#3+1}#4\dots#4 #1_#2}
+
+\newcommand{\Rtwo}[2]{\ensuremath{\R^{{#1}\times{#2}}}\xspace} % 2-D: R^{a x b}
+\newcommand{\Rthree}[3]{\ensuremath{\R^{{#1}\times{#2}\times{#3}}}\xspace} % 3-D: R^{a x b x c}
+\newcommand{\Rfour}[4]{\ensuremath{\R^{{#1}\times{#2}\times{#3}\times{#4}}}\xspace} % 4-D: R^{a x b x c x d}
+
+\DeclareMathOperator{\nnz}{nnz}
+\DeclareMathOperator{\makeVec}{vec}
+\DeclareMathOperator{\size}{size}
+\DeclareMathOperator{\reshape}{reshape}
+\DeclareMathOperator{\tensor}{tensor}
+\DeclareMathOperator{\permute}{permute}
+\DeclareMathOperator{\inversePermute}{inversePermute}
+
+\newcommand{\ipcomment}{\textcolor[rgb]{1,0,0}{IP: }\textcolor[rgb]{1,0,0}}
+\newcommand{\fixmenow}{\textcolor[rgb]{1,0,0}{FIXME!!: }\textcolor[rgb]{1,0,0}}
+\newcommand{\cbcomment}{\textcolor[rgb]{1,0,0}{CB: }\textcolor[rgb]{1,0.33,0.64}}
+\newcommand{\jlcomment}{\textcolor[rgb]{0,0,1}{JL: }\textcolor[rgb]{0,0,1}}
 
 %TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,6 +96,7 @@
 %Should we consider graphical models?
 %Should abstract emphasize bringing TD's to CS community, or emphasize computational limits?
 %Move to bitbucket
+%Do we have a section for randomized algorithms? What is the quality tradeoff?
 
 %construct straw-man survey for software grid
 %possibilities for software grid:
@@ -73,138 +122,39 @@
 \begin{abstract}
 Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community. One particularly difficult and relevant issue is the efficient low-rank representation of highly sparse, high-dimensional data.
 
-This survey has two goals: to demistify tensor approaches in data science (by moving away from clunky traditional notation), and to clearly delineate where current approaches (both dense and sparse) become computationally infeasible as a call towards future research in scalability.
+This survey is written with three main goals in mind: to demistify tensor approaches in data science (avoiding clunky traditional tensor notation), to clearly delineate where current approaches (both dense and sparse) become computationally infeasible, and to exhaustively list the capabilities of current tensor libraries. Our aim is that this survey may serve as a springboard for future research in tensor scalability and software methods. 
 \end{abstract}
 
 %\tableofcontents
 %=======================================================================
 \section{Introduction} \label{sec:intro}
-
-Existing surveys: Major Kolda survey~\cite{Kolda09tensordecompositions}, low-rank approximation survey~\cite{larskres-survey-2013}, tensor network survey~\cite{DBLP:journals/corr/Cichocki14}
-
-Explain why such a diverse landscape of tensor decompositions exists, and why we need native implementations of various types (TT,HT) to make computations feasible.
+\input{00-intro}
 
 %=======================================================================
 \section{Background} \label{sec:background}
-\subsection{Definitions} \label{sec:definitions}
-\subsubsection{Tensor Representation}
-
-\subsubsection{Multilinear Rank}
-Computing rank is NP complete, and best-rank approximation is ill-posed~\cite{Kolda09tensordecompositions}
-\subsubsection{Tensor Algebra}
-
-\subsubsection{Tensor Contractions}
-
-\subsubsection{Tensor Network Diagrams}
+\input{01-background}
 
 \section{Data Science Applications}
-In signal processing we may have both temporal and spatial components to our signal (in combination with frequency)
-
-Importance of multi-linear rank-reduction.
-
-Feature selection, feature extraction, classification, multi-way clustering.
-Blind-source separation. 
-psycho-metrics, chemometrics, signal processing, numerical linear algebra, computer vision, watermarking, numerical analysis, data mining, neuroscience, graph analysis, ICA.
-quantum chemistry(Hartree-Fock, MD), EM wave scattering/logging. 3-dimensional PDEs. 
-
-Anandkumar papers~\cite{Anandk}
+\input{02-applications}
 %=======================================================================
 \section{Low-Rank Approximations}
-%mention need for compression
+\input{03-lowrank}
 
-Tucker, CP are old concepts. Decomposition into block terms~\cite{Lathauwer08decompositionsof} generalizes standard methods.
-
-Neat application: Bilinear maps can be generalized as tensors, so tensor decompositions can yield faster algorithms for matrix multiplication, i.e~\cite{Benson}
-
-\subsection{CP Decomposition}
-Introduced:~\cite{hitchcock-sum-1927}
-CP breaks curse of dimensionality: instead of $n^d$ parameters we need only $dnr$.
-CP is ill-posed, different regularizations can be used.
-CP assumes every tensor mode is involved with every `concept.' Restrictive for noisy higher order data (-Joachim)
-\subsection{Tucker Decomposition}
-Introduced:~\cite{Tuck1966c}
-Instead of $n^d$ parameters we need only $\prod_{i=1}^d r_i + n\sum_{i=1}^d r_i$.
-Stable, we can use SVD~\cite{Lathauwer00amultilinear} To compute using `Tucker HOOI' algorithm~\cite{Lathauwer-THOOI}.
-We can determine $r_1, \dots, r_d$ as a function of $\epsilon$.
-
-If the Tucker Decomposition is properly normalized, it is also considered an HOSVD.
-
-Exponential storage, time. In sparse case, we have same problem: dense results (-Joachim)
-\subsection{Hierarchical Tucker}
-Introduced:~\cite{Grasedyck:2010:HSV:1958286.1958311}
-B's can express a linear combination of vectors in the U's below them.
-Obst 1: SVD of tensor unfoldings
-Obst 2: Intermediate memory blowup (computing core tensor)... dense intermediate result
-
-Tree-adaptive algorithm using clustering~\cite{treeadap}
-
-\subsubsection{Sparse H-Tucker}
-If we use CUR decomposition instead of SVD and store only those columns and rows that contain an element, we can greatly reduce storage and retain sparsity of 
-
-\subsection{Tensor Train}
-Introduced:~\cite{Oseledets:2011:TD:2079141.2079149}
-%=======================================================================
 \section{Computational Challenges}
-\subsection{NP-Hardness}
-Most tensor problems are NP-Hard~\cite{Hillar}.
+\input{04-challenges}
 
-\subsection{Curse of Dimensionality}
-Does \textsc{ParCube} help here?~\cite{PARCUBE}.
-
-\subsubsection{Time}
-
-\subsubsection{Memory Blowup}
-Memory-blowup problem identified and addressed in~\cite{Kolda08scalabletensor}.
-
-In CP-ALS, we have to compute $C\odot B, C\odot A, B\odot A$. Alleviation described in~\cite{Bader07efficientmatlab}
-
-\subsubsection{Storage}
-
-\subsection{Memory Efficiency}
-
-\subsubsection{Representation Issues}
-Tensor representations are cache-unfriendly because we may have to load them along any mode.
-There are a few proposed solutions~\cite{6408676}
-
-\subsubsection{Distributed Memory Issues}
-Mention GigaTensor~\cite{Kang:2012}, which scales much larger than MATLAB but suffers in performance due to MapReduce. 
-
-Discuss DFacTo~\cite{NIPS2014_5395}, another parallel approach. 
-
-\subsubsection{Communication Bounds}
-Recently established by Solomonik, et. al~\cite{commlow}.
-
-\subsection{Computational Scalability}
-There is a discussion of recent developments in distributed scalability of tensor algorithms~\cite{falbull}.
-
-\subsection{Sparsity}
-SPLATT takes a hyper-graph partitioning approach to reordering based on sparsity pattern~\cite{SPLATT}
-
-\subsection{Stability}
-%=======================================================================
-%Section on: common operations? computational bottlenecks?
 \section{Experiments}
-\subsection{Breaking Points}
-
-\subsubsection{CP Decomposition}
-
-\subsubsection{Tucker/HOSVD}
-
-\subsubsection{Hierarchical Tucker}
-
-\subsubsection{Tensor Train}
-
-\subsection{Comparisons}
+\input{05-experiments}
 %=======================================================================
 \section{Implementations}
-\input{software}
+\input{06-software}
 %=======================================================================
 \section{Conclusions} \label{sec:conclusions}
+\input{07-conclusion}
 %=======================================================================
-
-
 %=======================================================================
-%\section{Acknowledgments} \label{sec:acknowledgments}
+\section{Acknowledgments} \label{sec:acknowledgments}
+\input{08-acknowledgments}
 %=======================================================================
 
 \bibliographystyle{abbrv} \bibliography{tensbib}

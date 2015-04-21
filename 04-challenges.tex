@@ -1,0 +1,43 @@
+\subsection{NP-Hardness}
+Most tensor problems, including rank~\cite{HastadRanknp} are NP-Hard~\cite{Hillar}.
+
+\subsection{Curse of Dimensionality}
+Does \textsc{ParCube} help here?~\cite{PARCUBE}.
+
+\subsubsection{Time}
+
+\subsubsection{Memory Blowup}
+Memory-blowup problem identified and addressed in~\cite{Kolda08scalabletensor}.
+
+In CP-ALS, we have to compute $C\odot B, C\odot A, B\odot A$. Alleviation described in~\cite{Bader07efficientmatlab}
+
+\subsubsection{Storage}
+
+\subsection{Memory Efficiency}
+
+\subsubsection{Representation Issues}
+Tensor representations are cache-unfriendly because we may have to load them along any mode.
+There are a few proposed solutions~\cite{6408676}
+
+\subsubsection{Distributed Memory Issues}
+Mention GigaTensor~\cite{Kang:2012}, which scales much larger than MATLAB but suffers in performance due to MapReduce. 
+
+Discuss DFacTo~\cite{NIPS2014_5395}, another parallel approach. 
+
+Also \textsc{ParCube}~\cite{PARCUBE}
+
+
+\subsubsection{Communication Bounds}
+Recently established by Solomonik, et. al~\cite{commlow}.
+
+\subsection{Computational Scalability}
+There is a discussion of recent developments in distributed scalability of tensor algorithms~\cite{falbull}.
+
+\subsection{Sparsity}
+SPLATT takes a hyper-graph partitioning approach to reordering based on sparsity pattern~\cite{SPLATT}
+
+\subsection{Stability}
+%=======================================================================
+%Section on: common operations? computational bottlenecks?
+
+%eof

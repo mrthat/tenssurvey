@@ -1,42 +1,18 @@
-.DELETE_ON_ERROR:
-.PHONY: all clean
 .DEFAULT_GOAL := all
 
-PAPER := main
-FINAL := tens-survey
-BIBDIR = $(HOME)/Documents/bibs/mendeley
-BIBSRCS = $(BIBDIR)/library.bib
+DRAFT_BUILD_DIR = draft
 
-PDF_FINAL := $(FINAL).pdf
+all: draft-build-dir $(DRAFT_BUILD_DIR)/sig-alternate.pdf
 
-PDF := $(PAPER).pdf
-TEX := $(PAPER).tex intro.tex background.tex software.tex appendix.tex
-BIBS := tensbib.bib
-FIGS := 
-#SVG := $(addsuffix .svg, ... )
-#VIEWSVG := geeqie # or rsvg-view, etc...
+.PHONY: draft-build-dir
+draft-build-dir:
+	test -d $(DRAFT_BUILD_DIR)/ || mkdir -p $(DRAFT_BUILD_DIR)
 
-all: $(PDF_FINAL)
-
-$(PDF_FINAL): $(PDF)
-	cp $< $@
-
-$(PDF): $(TEX) $(BIBS) $(FIGS)
-	pdflatex $(PAPER)
-	-bibtex $(PAPER)
-	pdflatex $(PAPER)
-	pdflatex $(PAPER)
-
-rvbib:
-	cat $(BIBSRCS) > tensbib.bib
-
+.PHONY: $(DRAFT_BUILD_DIR)/sig-alternate.pdf
+$(DRAFT_BUILD_DIR)/sig-alternate.pdf:
+	latexmk -f -pdf -output-directory=$(DRAFT_BUILD_DIR)/ main.tex
 
 clean:
-	rm -f core *~ $(SVG) $(PDF) \
-	  $(PAPER).aux \
-	  $(PAPER).bbl \
-	  $(PAPER).blg \
-	  $(PAPER).log \
-	  $(PAPER).out
+	rm -rf $(DRAFT_BUILD_DIR)/ *~ core
 
 # eof

@@ -794,7 +794,8 @@ Vol.\ #3, No.\ #4, pp.\ #5
 
 
 \RequirePackage[dvips]{graphics,graphicx}
-\RequirePackage[colorlinks,pdfmark,dvips]{hyperref}
+%\RequirePackage[colorlinks,pdfmark,dvips]{hyperref}
+\RequirePackage[colorlinks]{hyperref}
 \def\wwwbrowser{C:\string\Program\space
 Files\string\Plus!\string\Microsoft\space
 Internet\string\iexplore.exe}
