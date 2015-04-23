@@ -13,6 +13,6 @@ $(DRAFT_BUILD_DIR)/sig-alternate.pdf:
 	latexmk -f -pdf -output-directory=$(DRAFT_BUILD_DIR)/ main.tex
 
 clean:
-	rm -rf $(DRAFT_BUILD_DIR)/ *~ core
+	rm -rf $(DRAFT_BUILD_DIR)/ *~ core *.blg *.toc *.bbl *.out *.aux *.log
 
 # eof

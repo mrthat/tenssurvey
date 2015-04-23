@@ -1,6 +1,12 @@
 \cbcomment{This is copied from Jiajia's paper for now, and the graphics are in there as placeholders}
 This section provides some essential formal background on tensors. Several of the examples and definitions are taken from the excellent overview by Kolda and Bader~\cite{Kolda:2009}.
 
+\begin{figure}
+  \centering\includegraphics[width=0.4\linewidth]{figs/3dtensor}
+  \caption{Example of a 3d tensor.}
+  \label{fig:3dtensor}
+\end{figure}
+
 A tensor can be interpreted as a multi-way array, as illustrated graphically in \reffig{fig:3dtensor}. This is a 3rd-order tensor. 
 We represent tensors by bold underlined capital letter, e.g., $\T{X} \in \R^{I \times J \times K}$. 
 The \emph{order} of a tensor is the number of its dimensions or modes, which in the example is 3.
@@ -21,12 +27,6 @@ In this paper, we consider double-precision real-valued elements for all tensors
 
 \RefFigure{fig:tensor-example}(b) gives three fibers of the tensor, denoted by $\V{x}_{:jk}, \V{x}_{i:k}, \V{x}_{ij:}$.
 
-\begin{figure}
-  \centering\includegraphics[width=0.4\linewidth]{figs/3dtensor}
-  \caption{Example of a 3d tensor.}
-  \label{fig:3dtensor}
-\end{figure}
-
 \begin{figure}[htbp]
     \centering
     \begin{tabular}{>{\centering\arraybackslash}p{0.45\textwidth}}
@@ -42,9 +42,9 @@ In this paper, we consider double-precision real-valued elements for all tensors
 \end{figure}
 
 Examples of tensor operations include the mode-$n$ product introduced in \refsec{sec:intro}, tensor contraction, and Kronecker product~\cite{Kolda:2009}.
-Since the mode-$n$ product is among the most widely used of these primitives, we focus on it in this paper and refer to it alternately as the \acf{Ttm}, following the terminology of the \TensorToolbox~\cite{TTB_Software}.
+Since the mode-$n$ product is among the most widely used of these primitives, we focus on it in this paper and refer to it alternately as the \acf{Ttm}, following the terminology of the \TensorToolbox~\cite{TensorToolbox}.
 %Thus, we focus on mode product as our primary example of tensor multiplications in this paper.
-Comprehensive surveys of other tensor operations appear elsewhere~\cite{Kolda:2009,CICHOCKI:2014}.
+Comprehensive surveys of other tensor operations appear elsewhere~\cite{Kolda:2009, DBLP:journals/corr/Cichocki14}.
 
 The \TTM between a tensor $\T{X} \in \R^{I_1 \times I_2 \times \cdots \times I_N}$ and a matrix $\M{U} \in \R^{J \times I_n}$ is another tensor $\T{Y} = \T{X} \times_n \M{U}$, where $\T{Y} \in \R^{I_1 \times \dots \times I_{n-1} \times J \times I_{n+1} \times \cdots \times I_N}$.
 One way to precisely define \TTM is to express it as the element-wise computation,
@@ -55,7 +55,7 @@ One way to precisely define \TTM is to express it as the element-wise computatio
   \label{eq:moden-ele}
 \end{eqnarray}
 Note that where the input tensor \T{X} is of length $I_n$ in its \varTh{n} mode, the result \T{Y} is of length $J$ in its \varTh{n} mode.
-Typically, $J$ will be much less than $I_n$, which we show has important consequences for performance in \refsec{sec:obser}.
+Typically, $J$ will be much less than $I_n$.
 
 
 The traditional way to execute a \TTM is through \emph{matricization}, also called \emph{unfolding} or \emph{flattening} in the literature.
@@ -100,7 +100,7 @@ The reverse process of creating a tensor from a matrix or vector is called \emph
 \end{equation}
 
 \subsubsection{Multilinear Rank}
-Computing rank is NP complete~\cite{HastadRanknp}, and best-rank approximation is ill-posed~\cite{Kolda09tensordecompositions}
+Computing rank is NP complete~\cite{HastadRanknp}, and best-rank approximation is ill-posed~\cite{Kolda:2009}
 \subsubsection{Tensor Algebra}
 
 \subsubsection{Tensor Contractions}

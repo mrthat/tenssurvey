@@ -1,21 +1,15 @@
-\documentclass[leqno,onefignum,onetabnum,twocolumn]{siamltex1213}
+\documentclass[leqno,onefignum,onetabnum]{siamltex1213}
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{url}
-\usepackage{ulem}
-\usepackage{mdwlist}
+%\usepackage{ulem}
+%\usepackage{mdwlist}
 \usepackage{booktabs}
 \usepackage{vuduc-stdpkgs}
 \usepackage{vuduc-typography}
-\usepackage{placeins}
+%\usepackage{placeins}
 \usepackage{lscape}
-\usepackage{caption}
-%\usepackage[numbers,sort&compress]{natbib}
-
-
-%\usepackage{hyperref}
 \usepackage{amsmath}
-\usepackage{float}
 \usepackage{amsfonts}
 \usepackage{morefloats}
 \setcounter{page}{1}
@@ -37,12 +31,10 @@
 \definecolor{cellgray}{gray}{0.9}
 
 \newcommand{\yesy}{\ccell{gray}{Y}}
-\newcommand{\non}{\ccell{white}{N}}
+\newcommand{\non}{N}
 \newcommand{\myhline}{}
-
 \newcommand{\TensorToolbox}{{\scshape Tensor Toolbox}\xspace}
 \newcommand{\Cyclops}{{\scshape Cyclops}\xspace}
-
 \newcommand{\MakeAcronym}[3]{
   \acrodef{#2}[{\scshape #2}]{#3}
   \newcommand{#1}{\ac{#2}\xspace}
@@ -54,10 +46,8 @@
 \MakeAcronym{\InTTM}{InTtm}{in-place tensor-times-matrix multiply}
 \MakeAcronym{\GEMM}{Gemm}{general matrix-matrix multiply}
 \newcommand{\TMM}{\TTM} % synonym
-
 % Additional math notation
 \newcommand{\varTh}[1]{\ensuremath{{#1}^{\tiny\mbox{th}}}\xspace}
-%\newcommand{\T}[1]{\ensuremath{\mathcal{#1}}\xspace} % tensor
 \newcommand{\T}[1]{\ensuremath{\mathbf{\underline{\uppercase{#1}}}}\xspace} % tensor
 \newcommand{\M}[1]{\ensuremath{\mathbf{\uppercase{#1}}}\xspace} % matrix
 \newcommand{\V}[1]{\ensuremath{\mathbf{\lowercase{#1}}}\xspace} % vector
@@ -65,13 +55,10 @@
 \newcommand{\Msub}[2]{\ensuremath{\M{#1}_{_{(#2)}}}\xspace} % {matrix}_{(subscript)}
 \newcommand{\Tsup}[2]{\ensuremath{\T{#1}^{^{(#2)}}}\xspace} % {tensor}^{(superscript)}
 \newcommand{\Tsub}[2]{\ensuremath{\T{#1}_{_{(#2)}}}\xspace} % {tensor}_{(subscript)}
-
 \newcommand{\timesSupSub}[2]{\ensuremath{\times^{^{#1}}_{_{#2}}}\xspace}
-
 \newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}
 \newcommand{\Iall}[2]{#1_1\times\dots\times #1_#2} 
 \newcommand{\Iallbutone}[5]{#1_1 #4\dots#4 #1_{#3-1} #5 #4 #1_{#3+1}#4\dots#4 #1_#2}
-
 \newcommand{\Rtwo}[2]{\ensuremath{\R^{{#1}\times{#2}}}\xspace} % 2-D: R^{a x b}
 \newcommand{\Rthree}[3]{\ensuremath{\R^{{#1}\times{#2}\times{#3}}}\xspace} % 3-D: R^{a x b x c}
 \newcommand{\Rfour}[4]{\ensuremath{\R^{{#1}\times{#2}\times{#3}\times{#4}}}\xspace} % 4-D: R^{a x b x c x d}
@@ -85,7 +72,6 @@
 \DeclareMathOperator{\inversePermute}{inversePermute}
 
 \newcommand{\ipcomment}{\textcolor[rgb]{1,0,0}{IP: }\textcolor[rgb]{1,0,0}}
-\newcommand{\fixmenow}{\textcolor[rgb]{1,0,0}{FIXME!!: }\textcolor[rgb]{1,0,0}}
 \newcommand{\cbcomment}{\textcolor[rgb]{1,0,0}{CB: }\textcolor[rgb]{1,0.33,0.64}}
 \newcommand{\jlcomment}{\textcolor[rgb]{0,0,1}{JL: }\textcolor[rgb]{0,0,1}}
 
@@ -98,12 +84,13 @@
 %Move to bitbucket
 %Do we have a section for randomized algorithms? What is the quality tradeoff?
 
-%construct straw-man survey for software grid
 %possibilities for software grid:
-% max mode, still maintained? user base? citations? how do you measure usability
+%max mode, still maintained? year of last commit? user base? citations? how do you measure usability
+
 
 %Tentative title
 \title{Data Analysis using Tensor Decompositions: Challenges and Applications}
+
 
 %Tentative author list
 \author{
@@ -112,55 +99,63 @@
   \\ Georgia Institute of Technology, Atlanta, GA
   \\ $^\ast$ School of Computational Science and Engineering \\
   \{cbattaglino3,perros,jiajiali,jsun,richie\}@gatech.edu } \date{}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+%\twocolumn
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \maketitle
+\slugger{sisc}{xxxx}{xx}{x}{x--x}%slugger should be set to mms, siap, sicomp, sicon, sidma, sima, simax, sinum, siopt, sisc, or sirev
 
+%=======================================================================
+%================================ABSTRACT===============================
+%=======================================================================
 \begin{abstract}
 Linear algebra underpins the majority of data analysis techniques, but multi-linear algebra remains a fringe topic despite its natural applicability to the high-dimensionality that arises in a Big Data setting. Tensor methods have been the subject of much research in signal processing, physics, and applied mathematics, but haven't seen wide adoption in the wider computer science community. One particularly difficult and relevant issue is the efficient low-rank representation of highly sparse, high-dimensional data.
 
 This survey is written with three main goals in mind: to demistify tensor approaches in data science (avoiding clunky traditional tensor notation), to clearly delineate where current approaches (both dense and sparse) become computationally infeasible, and to exhaustively list the capabilities of current tensor libraries. Our aim is that this survey may serve as a springboard for future research in tensor scalability and software methods. 
 \end{abstract}
 
+\begin{keywords}Tensor Computations\end{keywords}
+\begin{AMS}\end{AMS}
+\acresetall
+
+\pagestyle{myheadings}
+\thispagestyle{plain}
+
 %\tableofcontents
 %=======================================================================
-\section{Introduction} \label{sec:intro}
-\input{00-intro}
-
+%=================================BODY==================================
 %=======================================================================
-\section{Background} \label{sec:background}
-\input{01-background}
-
-\section{Data Science Applications}
-\input{02-applications}
+\section{Introduction}              \label{sec:intro}
+                                    \input{00-intro}
 %=======================================================================
-\section{Low-Rank Approximations}
-\input{03-lowrank}
-
-\section{Computational Challenges}
-\input{04-challenges}
-
-\section{Experiments}
-\input{05-experiments}
+\section{Background}                \label{sec:background}
+                                    \input{01-background}
 %=======================================================================
-\section{Implementations}
-\input{06-software}
+\section{Data Science Applications} \label{sec:applications}
+                                    \input{02-applications}
 %=======================================================================
-\section{Conclusions} \label{sec:conclusions}
-\input{07-conclusion}
+\section{Low-Rank Approximations}   \label{sec:lowrank}
+                                    \input{03-lowrank}
 %=======================================================================
+\section{Computational Challenges}  \label{sec:challenges}
+                                    \input{04-challenges}
 %=======================================================================
-\section{Acknowledgments} \label{sec:acknowledgments}
-\input{08-acknowledgments}
+\section{Experiments}               \label{sec:experiments}
+                                    \input{05-experiments}
 %=======================================================================
-
+\section{Implementations}           \label{sec:implementations}
+                                    \input{06-software}
+%=======================================================================
+\section{Conclusions}               \label{sec:conclusions}
+                                    \input{07-conclusion}
+%=======================================================================
+\section{Acknowledgments}           \label{sec:acknowledgments}
+                                    \input{08-acknowledgments}
+%=======================================================================
 \bibliographystyle{abbrv} \bibliography{tensbib}
-
 \input{appendix}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
